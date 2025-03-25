@@ -26,6 +26,13 @@ dependencies {
     implementation 'jakarta.xml.ws:jakarta.xml.ws-api:4.0.0'
     implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.4'
     implementation 'com.sun.xml.ws:jaxws-rt:4.0.1' // JAX-WS runtime for Java 21
+
+    // Add database driver
+    implementation 'org.postgresql:postgresql:42.6.0'
+
+    // Add sql builder
+    implementation 'org.jdbi:jdbi3-core:3.39.0'
+    implementation 'org.jdbi:jdbi3-sqlobject:3.39.0'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
