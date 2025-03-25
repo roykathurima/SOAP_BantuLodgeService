@@ -23,6 +23,9 @@ dependencies {
 
     // This dependency is used by the application.
     implementation libs.guava
+    implementation 'jakarta.xml.ws:jakarta.xml.ws-api:4.0.0'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.4'
+    implementation 'com.sun.xml.ws:jaxws-rt:4.0.1' // JAX-WS runtime for Java 21
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
