@@ -14,5 +14,5 @@ CREATE TABLE Room (
 CREATE TABLE ReservedRoom (
     id SERIAL PRIMARY KEY,
     client_id INT REFERENCES Client(id) NOT NULL,
-    room_id INT REFERENCES Room(id) NOT NULL,
+    room_id INT REFERENCES Room(id) NOT NULL
 );
