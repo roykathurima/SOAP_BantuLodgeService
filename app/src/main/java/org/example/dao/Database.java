@@ -3,6 +3,7 @@ package org.example.dao;
 import org.jdbi.v3.core.Jdbi;
 import java.util.List;
 import java.util.Optional;
+import io.github.cdimascio.dotenv.Dotenv;
 
 // local imports
 import org.example.models.Models.Room;
@@ -11,7 +12,12 @@ import org.example.models.Models.SingleReservation;
 
 // statuc makes the class act like a utility class
 public class Database {
-    private static final Jdbi jdbi = Jdbi.create("", "", "");
+    private static final Dotenv dotenv = Dotenv.load();
+    private static final String URL = dotenv.get("DB_URL");
+    private static final String USER = dotenv.get("DB_USER");
+    private static final String PASSWORD = dotenv.get("DB_PASSWORD");
+
+    private static final Jdbi jdbi = Jdbi.create(URL, USER, PASSWORD);
 
     // Add a user (client)
     public static Client addClient(String name, String email) {
