@@ -33,6 +33,10 @@ dependencies {
     // Add sql builder
     implementation 'org.jdbi:jdbi3-core:3.39.0'
     implementation 'org.jdbi:jdbi3-sqlobject:3.39.0'
+
+    // I really do not want to generated getters and setters
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
