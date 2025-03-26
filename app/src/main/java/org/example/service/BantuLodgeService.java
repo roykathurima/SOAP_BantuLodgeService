@@ -8,6 +8,7 @@ import jakarta.jws.WebMethod;
 
 // local imports
 import org.example.dao.Database;
+import org.example.models.Models;
 import org.example.models.Models.Client;
 import org.example.models.Models.Room;
 import org.example.models.Models.SingleReservation;
@@ -34,25 +35,26 @@ public class BantuLodgeService {
     }
 
     @WebMethod
-    public static Room bookRoom(Integer id) {
-        return Database.bookRoom(id);
+    public Room bookRoom(Integer id, String email) {
+        return Database.bookRoom(id, email);
     }
 
     @WebMethod
-    public static Reservation getBookedRoomsForUser(String email) {
+    public Reservation getBookedRoomsForUser(String email) {
         List<SingleReservation> reservations = Database.getBookedRoomsForUser(email);
         String name = null;
         double totalCost = 0;
         List<ReservedRoom> reservedRooms = new ArrayList<>();
         for (SingleReservation reservation : reservations) {
-            totalCost += reservation.price_per_night();
+            totalCost += reservation.getPrice_per_night();
             if (name == null) {
-                name = reservation.name();
+                name = reservation.getName();
             }
-            ReservedRoom reservedRoom = new ReservedRoom(reservation.room_number(), reservation.price_per_night());
+            ReservedRoom reservedRoom = new Models.ReservedRoom(reservation.getRoom_number(),
+                    reservation.getPrice_per_night());
             reservedRooms.add(reservedRoom);
         }
         assert name != null : "We should have a name by now";
-        return new Reservation(name, email, totalCost, reservedRooms);
+        return new Models.Reservation(name, email, totalCost, reservedRooms);
     }
 }

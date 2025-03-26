@@ -2,6 +2,7 @@ package org.example.dao;
 
 import org.jdbi.v3.core.Jdbi;
 import java.util.List;
+import java.util.Optional;
 
 // local imports
 import org.example.models.Models.Room;
@@ -10,16 +11,16 @@ import org.example.models.Models.SingleReservation;
 
 // statuc makes the class act like a utility class
 public class Database {
-    private static final Jdbi jdbi = Jdbi.create("url", "db_name", "db_password");
+    private static final Jdbi jdbi = Jdbi.create("", "", "");
 
     // Add a user (client)
     public static Client addClient(String name, String email) {
         return jdbi.withHandle(handle -> {
-            return handle.createUpdate("INSERT INTO clients (name, email) VALUES (:name, :email) RETURNING *;")
+            return handle.createUpdate("INSERT INTO client (name, email) VALUES (:name, :email) RETURNING *;")
                     .bind("name", name)
                     .bind("email", email)
                     .executeAndReturnGeneratedKeys()
-                    .mapTo(Client.class)
+                    .mapToBean(Client.class)
                     .one();
         });
     }
@@ -32,7 +33,7 @@ public class Database {
                     .bind("room_number", room_number)
                     .bind("nightly_price", nightly_price)
                     .executeAndReturnGeneratedKeys()
-                    .mapTo(Room.class)
+                    .mapToBean(Room.class)
                     .one();
         });
     }
@@ -46,22 +47,51 @@ public class Database {
         });
     }
 
-    // Book room
-    public static Room bookRoom(Integer id) {
-        return jdbi.withHandle(handle -> handle.createQuery("UPDATE room SET booked = TRUE WHERE id = :id RETURNING *;")
-                .bind("id", id)
-                .mapTo(Room.class)
-                .one());
+    // Book room, we should also know which user booked the room; user to supply
+    // email
+    public static Room bookRoom(Integer id, String email) {
+        return jdbi.withHandle(handle -> {
+            Optional<Room> bookedRoomOpt = handle
+                    .createQuery("UPDATE room SET booked = TRUE WHERE id = :id RETURNING *;")
+                    .bind("id", id)
+                    .mapToBean(Room.class)
+                    .findOne();
+            Optional<Integer> userIdOpt = handle.createQuery("SELECT id FROM client WHERE email = :email")
+                    .bind("email", email)
+                    .mapTo(Integer.class)
+                    .findOne();
+            if (bookedRoomOpt.isEmpty()) {
+                throw new IllegalArgumentException("Room not found");
+            }
+            if (userIdOpt.isEmpty()) {
+                throw new IllegalArgumentException("User not found with email: " + email);
+            }
+
+            Room bookedRoom = bookedRoomOpt.get();
+            Integer userId = userIdOpt.get();
+
+            handle.createUpdate("INSERT INTO reservedroom (client_id, room_id) VALUES (:client_id, :room_id);")
+                    .bind("client_id", userId)
+                    .bind("room_id", bookedRoom.getId())
+                    .execute();
+
+            return bookedRoom;
+
+        });
     }
 
     // Get a list of booked rooms
     // the service that will call this class will handle the logic of adding up the
     // totals
     public static List<SingleReservation> getBookedRoomsForUser(String email) {
-        return jdbi.withHandle(handle -> handle.createQuery(
+        System.out.println("We are going in....");
+        List<SingleReservation> reservations = jdbi.withHandle(handle -> handle.createQuery(
                 "SELECT r.id, c.email, c.name, rm.room_number, rm.price_per_night FROM reservedroom r INNER JOIN client c ON c.id = r.client_id INNER JOIN room rm ON rm.id = r.room_id WHERE c.email = :email;")
                 .bind("email", email)
-                .mapTo(SingleReservation.class)
+                .mapToBean(SingleReservation.class)
                 .list());
+        System.out.println("We went in and came back..");
+        System.out.println(reservations);
+        return reservations;
     }
 }
