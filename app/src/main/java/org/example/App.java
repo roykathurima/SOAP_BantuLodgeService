@@ -8,10 +8,6 @@ import jakarta.xml.ws.Endpoint;
 import org.example.service.BantuLodgeService;
 
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
-
     public static void main(String[] args) {
         String url = "http://localhost:8086/BantuLodgeService";
         Endpoint.publish(url, new BantuLodgeService());
