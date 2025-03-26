@@ -1,11 +1,10 @@
 package org.example.dao;
 
 import org.jdbi.v3.core.Jdbi;
-// local imports
-import org.example.models.Models.Room;
-
 import java.util.List;
 
+// local imports
+import org.example.models.Models.Room;
 import org.example.models.Models.Client;
 import org.example.models.Models.SingleReservation;
 
