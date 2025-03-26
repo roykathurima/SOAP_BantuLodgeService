@@ -3,12 +3,18 @@
  */
 package org.example;
 
+import jakarta.xml.ws.Endpoint;
+// local imports
+import org.example.service.BantuLodgeService;
+
 public class App {
     public String getGreeting() {
         return "Hello World!";
     }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        String url = "http://localhost:8086/BantuLodgeService";
+        Endpoint.publish(url, new BantuLodgeService());
+        System.out.println("BantuLodge SOAP servive started at " + url);
     }
 }
