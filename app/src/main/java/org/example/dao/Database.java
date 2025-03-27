@@ -90,14 +90,11 @@ public class Database {
     // the service that will call this class will handle the logic of adding up the
     // totals
     public static List<SingleReservation> getBookedRoomsForUser(String email) {
-        System.out.println("We are going in....");
         List<SingleReservation> reservations = jdbi.withHandle(handle -> handle.createQuery(
                 "SELECT r.id, c.email, c.name, rm.room_number, rm.price_per_night FROM reservedroom r INNER JOIN client c ON c.id = r.client_id INNER JOIN room rm ON rm.id = r.room_id WHERE c.email = :email;")
                 .bind("email", email)
                 .mapToBean(SingleReservation.class)
                 .list());
-        System.out.println("We went in and came back..");
-        System.out.println(reservations);
         return reservations;
     }
 }
