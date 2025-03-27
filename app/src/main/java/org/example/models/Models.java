@@ -40,7 +40,13 @@ public class Models {
         private double price_per_night;
     }
 
-    public record ReservedRoom(int room_number, double price_per_night) {
+    @XmlRootElement
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReservedRoom {
+        private int room_number;
+        private double price_per_night;
     }
 
     @XmlRootElement
