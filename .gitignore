@@ -15,4 +15,5 @@ build
 *.war
 *.ear
 
+**/flyway.conf
 .env
