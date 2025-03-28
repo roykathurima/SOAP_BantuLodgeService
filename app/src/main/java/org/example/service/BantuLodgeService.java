@@ -6,6 +6,7 @@ import java.util.List;
 import jakarta.jws.WebService;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
+import jakarta.jws.WebResult;
 
 // local imports
 import org.example.dao.Database;
@@ -21,27 +22,32 @@ public class BantuLodgeService {
 
     // Service method to add client
     @WebMethod
+    @WebResult(name = "client")
     public Client addClient(@WebParam(name = "clientName") String name, @WebParam(name = "userEmail") String email) {
         return Database.addClient(name, email);
     }
 
     @WebMethod
+    @WebResult(name = "room")
     public Room addRoom(@WebParam(name = "roomNumber") Integer room_number,
             @WebParam(name = "pricePerNight") Double nightly_price) {
         return Database.addRoom(room_number, nightly_price);
     }
 
     @WebMethod
+    @WebResult(name = "rooms")
     public List<Room> getAvailableRooms() {
         return Database.getAvailableRooms();
     }
 
     @WebMethod
+    @WebResult(name = "bookedRoom")
     public Room bookRoom(@WebParam(name = "roomId") Integer id, @WebParam(name = "userEmail") String email) {
         return Database.bookRoom(id, email);
     }
 
     @WebMethod
+    @WebResult(name = "bookedRooms")
     public Reservation getBookedRoomsForUser(@WebParam(name = "userEmail") String email) {
         List<SingleReservation> reservations = Database.getBookedRoomsForUser(email);
         String name = null;
